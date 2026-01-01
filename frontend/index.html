@@ -1,0 +1,917 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Apex Grid Works</title>
+
+<style>
+:root{
+  --bg:#0b0b0b;
+  --panel:#111;
+  --ink:#eaeaea;
+  --muted:#9a9a9a;
+  --border:#2a2a2a;
+  --accent:#e10600;
+  --maxw:1100px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  font-family:Inter,system-ui,Arial;
+  background:var(--bg);
+  color:var(--ink);
+}
+
+.container{
+  max-width:var(--maxw);
+  margin:40px auto;
+  padding:0 20px;
+}
+
+/* HEADER */
+header{
+  border-bottom:3px solid var(--accent);
+  padding-bottom:16px;
+  margin-bottom:32px;
+}
+
+.brand h1{
+  font-size:30px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+}
+
+.brand .tag{
+  color:var(--muted);
+  font-size:12px;
+  letter-spacing:2px;
+  margin-top:6px;
+}
+
+/* SECTIONS */
+.section{
+  background:var(--panel);
+  border:1.5px solid var(--border);
+  padding:28px;
+  margin-bottom:30px;
+}
+
+/* HERO */
+.hero h2{
+  font-size:38px;
+  text-transform:uppercase;
+  letter-spacing:2px;
+}
+
+.speed{
+  width:160px;
+  height:5px;
+  background:var(--accent);
+  margin:14px 0;
+  transition:width .25s ease;
+}
+
+.hero:hover .speed{
+  width:190px;
+}
+
+
+.hero .gridtext{
+  margin-top:14px;
+  font-size:12px;
+  letter-spacing:3px;
+  color:#aaa;
+}
+
+/* PRODUCTS */
+.products h3{
+  font-size:13px;
+  letter-spacing:2px;
+  color:var(--muted);
+  margin-bottom:16px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap:22px;
+}
+
+@media (max-width: 900px){
+  .grid{
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 520px){
+  .grid{
+    grid-template-columns: 1fr;
+  }
+}
+
+
+.card{
+  background:#0f0f0f;
+  border:1.5px solid var(--border);
+  padding:14px;
+  cursor:pointer;
+  transition:.15s;
+  position:relative;
+}
+
+.card:hover{
+  border-color:var(--accent);
+  transform:translateY(-3px);
+}
+
+.card img{
+  width:100%;
+  height:240px;
+  object-fit:cover;
+  filter: contrast(1.2) saturate(.85);
+  border:1px solid var(--border);
+}
+
+.card h4{
+  margin-top:10px;
+  font-size:14px;
+  text-transform:uppercase;
+  letter-spacing:1.5px;
+}
+
+.card::after{
+  content:"";
+  position:absolute;
+  inset:6px;
+  border:1px solid #1f1f1f;
+  pointer-events:none;
+}
+
+
+.price{
+  color:var(--muted);
+  font-size:13px;
+  margin-top:4px;
+}
+
+/* FOOTER */
+footer{
+  margin-top:50px;
+  border-top:1px solid var(--border);
+  padding-top:20px;
+  text-align:center;
+  color:#666;
+  font-size:12px;
+}
+
+/* POPUP */
+.popup-bg{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.7);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:20;
+}
+
+.popup{
+  background:#0f0f0f;
+  border:2px solid var(--accent);
+  padding:22px;
+  width:90%;
+  max-width:800px;
+  display:flex;
+  gap:18px;
+}
+
+.popup img{
+  width:400px;
+  height:400px;
+  object-fit:cover;
+  border:1px solid var(--border);
+}
+
+.popup h3{
+  text-transform:uppercase;
+  letter-spacing:1.5px;
+  margin-bottom:6px;
+}
+
+.popup p{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.popup .price{
+  font-weight:700;
+  margin:8px 0;
+}
+
+.popup input{
+  width:100%;
+  background:#0b0b0b;
+  border:1px solid var(--border);
+  color:var(--ink);
+  padding:10px;
+  margin-top:10px;
+}
+
+.popup button{
+  margin-top:14px;
+  width:100%;
+  padding:14px;
+  background:var(--accent);
+  border:none;
+  color:white;
+  font-weight:800;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  cursor:pointer;
+}
+
+.popup button:hover{
+  background:#ff1a1a;
+}
+
+.close{
+  margin-top:10px;
+  text-align:center;
+  font-size:12px;
+  color:#888;
+  cursor:pointer;
+} 
+
+.price .old{
+  color:#777;
+  text-decoration:line-through;
+  margin-right:6px;
+  font-size:12px;
+}
+
+.contact{
+  text-decoration: underline;
+}
+
+.color-picker{
+  display:flex;
+  gap:12px;
+  margin-top:10px;
+}
+
+.color-picker label{
+  cursor:pointer;
+}
+
+.color-picker input{
+  display:none;
+}
+
+/* THE DOT */
+.dot{
+  width:15px;
+  height:15px;
+  border-radius:50%;
+  border:1.5px solid #444;
+  display:inline-block;
+}
+
+/* COLORS */
+.dot.red{background:#e10600;}
+.dot.blue{background:#0033cc;}
+.dot.black{background:#000;}
+.dot.grey{background:#777;}
+
+/* SELECTED STATE */
+.color-picker input:checked + .dot{
+  outline:2px solid #e10600;
+  outline-offset:2px;
+}
+
+.board-switch{
+  display:flex;
+  gap:8px;
+  margin-bottom:12px;
+}
+
+.board-switch label{
+  flex:1;
+  text-align:center;
+  cursor:pointer;
+}
+
+.board-switch input{
+  display:none;
+}
+
+.board-switch span{
+  display:block;
+  padding:8px 0;
+  border:1px solid var(--border);
+  font-size:12px;
+  letter-spacing:1.5px;
+  color:#aaa;
+  transition:.15s;
+}
+
+.board-switch input:checked + span{
+  border-color:var(--accent);
+  color:white;
+}
+.extras{
+  margin-top:14px;
+  display:flex;
+  gap:10px;
+}
+
+.extra-option{
+  flex:1;
+  cursor:pointer;
+}
+
+.extra-option input{
+  display:none;
+}
+
+.extra-option span{
+  display:block;
+  padding:10px 0;
+  text-align:center;
+  border:1.5px solid var(--border);
+  font-size:12px;
+  letter-spacing:1.5px;
+  color:#aaa;
+  transition:.15s;
+}
+
+/* ACTIVE STATE */
+.extra-option input:checked + span{
+  border-color:var(--accent);
+  color:white;
+}
+
+hr{
+  border:none;
+  border-top:1.5px solid var(--border);
+  margin:14px 0;
+}
+
+/* BASE COLOR VARIANT (different accent) */
+.base-color .extra-option span{
+  border-color:#3a3a3a;
+  color:#bbb;
+}
+
+.base-color input:checked + span{
+  border-color:#aaa;
+  color:white;
+  background:#161616;
+}
+
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<header class="brand">
+  <h1>Apex Grid Works</h1>
+  <div class="tag">MODULAR RACING MODELS · PLAY · DISPLAY · EXPAND</div>
+</header>
+
+<section class="section hero">
+  <h2>Built for Speed.</h2>
+  <div class="speed"></div>
+  <p>
+    Fan-made, 3D-printed racing car models engineered for both
+    play and display. Modular stands connect together to build
+    multi-car setups — including third-party models. For multiple products, please place separate orders.
+  </p>
+  <div class="gridtext">NO AFFILIATION · PURE BUILD</div>
+</section>
+
+<section class="section products">
+  <h3>PRODUCTS</h3>
+
+  <div class="grid">
+    <div class="card" onclick="openPopup('Racing Car','₹349','photos/car.jpg','Playable scale racing car. Can be displayed on the Display Stand.')">
+      <img src="photos/car.jpg">
+      <h4>Racing Car</h4>
+      <div class="price">
+        <span class="old">₹449</span> ₹349
+      </div>
+    </div>
+
+    <div class="card" onclick="openPopup('Display Stand','₹299','photos/stand.jpg','Modular stand. Car not included. Can click onto any other modular stand seamlessly.')">
+      <img src="photos/stand.jpg">
+      <h4>Display Stand</h4>
+      <div class="price">
+        <span class="old">₹349</span> ₹299
+      </div>
+    </div>
+
+    <div class="card" onclick="openPopup('Logo Module','₹449','photos/logo.jpg','Standalone modular logo piece. Can click onto any other modular stand seamlessly.')">
+      <img src="photos/logo.jpg">
+      <h4>Logo Module</h4>
+      <div class="price">
+        <span class="old">₹499</span> ₹449
+      </div>
+    </div>
+
+    <div class="card" onclick="openPopup('Complete Setup','₹799','photos/bundle.jpg','Car + stand + logo. In a modular setup so you can change the order you display them in.')">
+      <img src="photos/bundle.jpg">
+      <h4>Complete Setup</h4>
+      <div class="price">
+        <span class="old">₹999</span> ₹799
+      </div>
+    </div>
+
+    <div class="card" onclick="openPopup('Extra Bumpers','₹39','photos/bundle.jpg','Add to the ends of any modular stand to make it look finished. (Already included when purchasing any stand.)')">
+      <img src="photos/bundle.jpg">
+      <h4>Extra Bumpers</h4>
+      <div class="price">
+        <span class="old">₹49</span> ₹39
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  Unofficial fan-made models. Not affiliated with any racing organizations. <a class="contact" target="_blank" href="https://wa.me/7396067748?text=Hello.%20I%20would%20like%20help%20with%20my%20purchase%20at%20ApexGridWorks.">Contact Us</a>
+</footer>
+
+</div>
+
+<div class="popup-bg" id="popupBg">
+  <div class="popup">
+    <img id="pImg">
+    <div style="flex:1">
+      <h3 id="pTitle"></h3>
+      <p id="pDesc"></p>
+      <div class="price" id="pPrice"></div>
+
+      <div class="board-switch">
+        <label>
+          <input type="radio" name="board" value="IGCSE" checked>
+          <span>IGCSE</span>
+        </label>
+        <label>
+          <input type="radio" name="board" value="CBSE">
+          <span>CBSE</span>
+        </label>
+      </div>
+      <hr>
+      <div style="margin-top:12px;">
+       <div class="extras">
+          <label class="extra-option">
+            <input type="checkbox" id="optQuality">
+            <span>Premium Quality <br><small>(+₹50)</small></span>
+          </label>
+
+          <label class="extra-option">
+            <input type="checkbox" id="optPriority">
+            <span>Quick Delivery <br><small>(+₹50)</small></span>
+          </label>
+        </div>
+      </div>
+
+      <div id="baseColorWrap" class="base-color" style="margin-top:14px; display:none;">
+        <div class="extras">
+          <label class="extra-option">
+            <input type="radio" name="baseColor" value="GREY" checked>
+            <span>Grey Base</span>
+          </label>
+
+          <label class="extra-option">
+            <input type="radio" name="baseColor" value="BLACK">
+            <span>Black Base</span>
+          </label>
+        </div>
+      </div>
+
+      <input id="custName" placeholder="Your Name">
+      <input id="custClass" placeholder="Class & Section">
+      <input id="custPhone" placeholder="Phone Number">
+      <input id="custEmail" placeholder="Email">
+
+      <div id="formError" style="
+        display:none;
+        margin-top:10px;
+        font-size:12px;
+        letter-spacing:1px;
+        color:#ff4d4d;
+      ">
+      </div>
+
+
+
+      <button onclick="sendOrder()">PLACE ORDER</button>
+      <div id="orderSuccess" style="
+        display:none;
+        margin-top:12px;
+        font-size:13px;
+        letter-spacing:1px;
+        color:#7CFF7C;
+      ">
+        ORDER PLACED.<br>
+        We’ve received your order. A confirmation email will be sent.
+      </div>
+      <div class="close" onclick="closePopup()">CANCEL</div>
+      <div class="color-picker" id="colorPicker" style="display:none;">
+        <label>
+          <input type="radio" name="carColor" value="Red" checked>
+          <span class="dot red"></span>
+        </label>
+
+        <label>
+          <input type="radio" name="carColor" value="Blue">
+          <span class="dot blue"></span>
+        </label>
+
+        <label>
+          <input type="radio" name="carColor" value="Black">
+          <span class="dot black"></span>
+        </label>
+
+        <label>
+          <input type="radio" name="carColor" value="Grey">
+          <span class="dot grey"></span>
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let cart = {};
+let product = '', price = '', baseImage = '';
+
+const colorProducts = ["Racing Car", "Complete Setup"];
+
+const baseColorProducts = [
+  "Display Stand",
+  "Logo Module",
+  "Extra Bumpers",
+  "Complete Setup"
+];
+
+// image map per product + color
+const colorImages = {
+  "Racing Car": {
+    Red: "photos/car_red.jpg",
+    Blue: "photos/car_blue.jpg",
+    Black: "photos/car_black.jpg",
+    Grey: "photos/car_grey.jpg"
+  },
+  "Complete Setup": {
+    Red: "photos/bundle_red.jpg",
+    Blue: "photos/bundle_blue.jpg",
+    Black: "photos/bundle_black.jpg",
+    Grey: "photos/bundle_grey.jpg"
+  }
+};
+
+const colorToTeam = {
+  Red: "Ferrari",
+  Blue: "Red Bull",
+  Black: "Cadillac",
+  Grey: "Mercedes"
+};
+
+const baseColorImages = {
+  "Display Stand": {
+    GREY: "photos/stand_grey.jpg",
+    BLACK: "photos/stand_black.jpg"
+  },
+  "Logo Module": {
+    GREY: "photos/logo_grey.jpg",
+    BLACK: "photos/logo_black.jpg"
+  },
+  "Extra Bumpers": {
+    GREY: "photos/bumpers_grey.jpg",
+    BLACK: "photos/bumpers_black.jpg"
+  }
+};
+
+const bundleImages = {
+  Red: {
+    GREY: "photos/bundle_red_grey.jpg",
+    BLACK: "photos/bundle_red_black.jpg"
+  },
+  Blue: {
+    GREY: "photos/bundle_blue_grey.jpg",
+    BLACK: "photos/bundle_blue_black.jpg"
+  },
+  Black: {
+    GREY: "photos/bundle_black_grey.jpg",
+    BLACK: "photos/bundle_black_black.jpg"
+  },
+  Grey: {
+    GREY: "photos/bundle_grey_grey.jpg",
+    BLACK: "photos/bundle_grey_black.jpg"
+  }
+};
+
+
+
+function openPopup(t, p, img, d){
+  resetOrderPopup(); 
+  product = t;
+  price = p;
+  baseImage = img;
+
+  document.getElementById('pTitle').innerText = t;
+  if (colorProducts.includes(t)) {
+  document.getElementById('pDesc').innerText =
+    "Team: " + colorToTeam["Red"];}
+  else {
+  document.getElementById('pDesc').innerText = d;}
+
+  document.getElementById('pPrice').innerText = p;
+  document.getElementById('pImg').src = img;
+
+  const colorPicker = document.getElementById("colorPicker");
+
+  if (colorProducts.includes(t)) {
+    colorPicker.style.display = "flex";
+
+    // reset to Red when opening
+    document.querySelector('input[name="carColor"][value="Red"]').checked = true;
+    document.getElementById('pImg').src = colorImages[t]["Red"];
+  } else {
+    colorPicker.style.display = "none";
+  }
+
+  const baseWrap = document.getElementById("baseColorWrap");
+
+  if (baseColorProducts.includes(t)) {
+    baseWrap.style.display = "block";
+    document.querySelector('input[name="baseColor"][value="GREY"]').checked = true;
+  } else {
+    baseWrap.style.display = "none";
+  }
+
+  document.getElementById('popupBg').style.display = 'flex';
+
+  if (t === "Complete Setup") {
+    updateCompleteSetupImage();
+  }
+}
+
+function closePopup(){
+  document.getElementById('popupBg').style.display = 'none';
+}
+
+function sendOrder(){
+  const n = document.getElementById('custName').value.trim();
+  const c = document.getElementById('custClass').value.trim();
+  const ph = document.getElementById('custPhone').value.trim();
+  const em = document.getElementById('custEmail').value.trim();
+  const board = document.querySelector('input[name="board"]:checked').value;
+
+  const error = document.getElementById('formError');
+
+  const phoneRegex = /^[6-9]\d{9}$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if(!n || !c || !ph || !em){
+    error.innerText = "ALL FIELDS ARE REQUIRED";
+    error.style.display = "block";
+    return;
+  }
+
+
+  if(!phoneRegex.test(ph)){
+    error.innerText = "ENTER A VALID 10-DIGIT PHONE NUMBER";
+    error.style.display = "block";
+    return;
+  }
+
+  if(!emailRegex.test(em)){
+    error.innerText = "ENTER A VALID EMAIL ADDRESS";
+    error.style.display = "block";
+    return;
+  }
+
+  error.style.display = "none";
+
+  let color = null;
+  let team = null;
+
+  if (colorProducts.includes(product)) {
+    color = document.querySelector('input[name="carColor"]:checked').value;
+    team = colorToTeam[color];
+  }
+  
+  let baseColor = null;
+
+  if (baseColorProducts.includes(product)) {
+    baseColor = document.querySelector(
+      'input[name="baseColor"]:checked'
+    )?.value || "GREY";
+  }
+
+  const quality = document.getElementById("optQuality").checked
+  ? "PREMIUM"
+  : "STANDARD";
+
+  const priority = document.getElementById("optPriority").checked;
+
+  const orderData = {
+    name: n,
+    class: c,
+    phone: ph,
+    email: em,
+    board,
+    product,
+    basePrice: Number(price.replace("₹","")),
+    color: colorProducts.includes(product)
+      ? document.querySelector('input[name="carColor"]:checked').value
+      : null,
+    team: colorProducts.includes(product)
+      ? colorToTeam[
+          document.querySelector('input[name="carColor"]:checked').value
+        ]
+      : null,
+    baseColor,
+    quality,
+    priority
+  };
+
+  fetch("http://localhost:3000/api/order", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(orderData)
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      document.getElementById("orderSuccess").style.display = "block";
+
+      // 🔴 ADD THESE TWO LINES
+      setTimeout(() => {
+        resetOrderPopup();
+        closePopup();
+      }, 1500);
+    } else {
+      error.innerText = "ORDER FAILED. TRY AGAIN.";
+      error.style.display = "block";
+    }
+  })
+  .catch(() => {
+    error.innerText = "SERVER ERROR. TRY AGAIN LATER.";
+    error.style.display = "block";
+  });
+}
+
+document.querySelectorAll('input[name="carColor"]').forEach(radio => {
+  radio.addEventListener('change', () => {
+    if (product === "Complete Setup") {
+      updateCompleteSetupImage();
+      document.getElementById('pDesc').innerText =
+        "Team: " + colorToTeam[radio.value];
+      return;
+    }
+
+    // existing Racing Car logic
+    if (colorProducts.includes(product)) {
+      document.getElementById('pImg').src =
+        colorImages[product][radio.value];
+
+      document.getElementById('pDesc').innerText =
+        "Team: " + colorToTeam[radio.value];
+    }
+  });
+});
+
+document.querySelectorAll('input[name="baseColor"]').forEach(radio => {
+  radio.addEventListener("change", () => {
+
+    // COMPLETE SETUP → combined logic
+    if (product === "Complete Setup") {
+      updateCompleteSetupImage();
+      return;
+    }
+
+    // BASE-ONLY PRODUCTS
+    if (baseColorProducts.includes(product)) {
+      const selected = radio.value;
+      document.getElementById("pImg").src =
+        baseColorImages[product][selected];
+    }
+  });
+});
+
+["custName","custClass","custPhone","custEmail"].forEach(id=>{
+  document.getElementById(id).addEventListener("input",()=>{
+    document.getElementById("formError").style.display="none";
+  });
+});
+
+function addToCart(product, price, variant = null) {
+  const key = variant ? `${product}|${variant}` : product;
+
+  if (cart[key]) {
+    cart[key].qty += 1;
+  } else {
+    cart[key] = { product, variant, price, qty: 1 };
+  }
+
+  renderCart();
+}
+
+function updateQty(key, delta) {
+  cart[key].qty += delta;
+  if (cart[key].qty <= 0) delete cart[key];
+  renderCart();
+}
+
+function renderCart() {
+  const items = document.getElementById("cartItems");
+  const totalEl = document.getElementById("cartTotal");
+
+  items.innerHTML = "";
+  let total = 0;
+
+  Object.keys(cart).forEach(key => {
+    const i = cart[key];
+    const line = i.price * i.qty;
+    total += line;
+
+    items.innerHTML += `
+      <div style="margin-bottom:12px;">
+        <strong>${i.product}</strong>
+        ${i.variant ? `<div style="font-size:12px;color:#aaa;">Team: ${i.variant}</div>` : ""}
+        <div>
+          <button onclick="updateQty('${key}', -1)">−</button>
+          ${i.qty}
+          <button onclick="updateQty('${key}', 1)">+</button>
+          <span style="float:right;">₹${line}</span>
+        </div>
+      </div>
+    `;
+  });
+
+  totalEl.innerText = "TOTAL: ₹" + total;
+}
+
+function openCart() {
+  document.getElementById("cartBg").style.display = "flex";
+}
+
+function closeCart() {
+  document.getElementById("cartBg").style.display = "none";
+}
+
+function checkout() {
+  alert("Checkout later");
+}
+
+function resetOrderPopup(){
+  // clear text inputs
+  document.getElementById("custName").value = "";
+  document.getElementById("custClass").value = "";
+  document.getElementById("custPhone").value = "";
+  document.getElementById("custEmail").value = "";
+
+  // reset board to IGCSE
+  document.querySelector('input[name="board"][value="IGCSE"]').checked = true;
+
+  // reset quality & priority
+  document.getElementById("optQuality").checked = false;
+  document.getElementById("optPriority").checked = false;
+
+  // reset color to Red (if applicable)
+  const red = document.querySelector('input[name="carColor"][value="Red"]');
+  if (red) red.checked = true;
+
+  // clear error
+  document.getElementById("formError").style.display = "none";
+
+    // hide success message
+  document.getElementById("orderSuccess").style.display = "none";
+
+  const grey = document.querySelector('input[name="baseColor"][value="GREY"]');
+  if (grey) grey.checked = true;
+}
+
+function updateCompleteSetupImage() {
+  const car = document.querySelector('input[name="carColor"]:checked')?.value;
+  const base = document.querySelector('input[name="baseColor"]:checked')?.value;
+
+  if (!car || !base) return;
+
+  document.getElementById("pImg").src =
+    bundleImages[car][base];
+}
+
+</script>
+
+
+</body>
+</html>
