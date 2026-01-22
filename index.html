@@ -786,8 +786,10 @@ function openPopup(t, p, img, d){
 }
 
 function closePopup(){
+  resetOrderPopup();
   document.getElementById('popupBg').style.display = 'none';
 }
+
 
 function sendOrder(){
   const btn = document.getElementById("placeOrderBtn");
@@ -887,7 +889,7 @@ function sendOrder(){
     priority
   };
 
-  fetch("http://localhost:3000/api/order", {
+  fetch("https://apexgridworks-backend.onrender.com/api/order", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -1043,6 +1045,13 @@ function checkout() {
 }
 
 function resetOrderPopup(){
+  //changes the button back to normal
+  const btn = document.getElementById("placeOrderBtn");
+  btn.innerText = "PLACE ORDER";
+  btn.innerHTML = "PLACE ORDER";
+  btn.disabled = false;
+  btn.style.background = "";
+
   // clear text inputs
   document.getElementById("custName").value = "";
   document.getElementById("custClass").value = "";
