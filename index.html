@@ -439,17 +439,18 @@ hr{
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  
-  width: 42px;
-  height: 42px;
 
-  background: rgba(0,0,0,0.6);
-  border: 1px solid var(--border);
+  width: 44px;
+  height: 44px;
+
+  background: rgba(0,0,0,0.65);
+  border: 1.5px solid #333;
   border-radius: 50%;
 
   color: white;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
+  line-height: 1;
 
   display: flex;
   align-items: center;
@@ -458,16 +459,17 @@ hr{
   cursor: pointer;
   padding: 0;
 
-  transition: background .15s, transform .15s;
+  transition: background 0.15s ease, transform 0.15s ease;
+  z-index: 5;
 }
 
 .carousel .nav:hover{
   background: rgba(225,6,0,0.85);
-  transform: translateY(-50%) scale(1.05);
+  transform: translateY(-50%) scale(1.08);
 }
 
-.carousel .left{ left: 6px; }
-.carousel .right{ right: 6px; }
+.carousel .left{ left: 10px; }
+.carousel .right{ right: 10px; }
 
 /* mobile */
 @media (max-width: 700px){
@@ -1268,6 +1270,7 @@ function prevImg() {
 
 </body>
 </html>
+
 
 
 
