@@ -6,6 +6,30 @@
 <title>Apex Grid Works</title>
 
 <style>
+/* INTRO */
+#intro{
+  position:fixed;
+  inset:0;
+  background:#0b0b0b;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+
+#introLogo{
+  width:420px;
+}
+
+body.loaded .container{
+  opacity:1;
+}
+
+.container{
+  opacity:0;
+  transition:opacity .6s ease;
+}
+
 :root{
   --bg:#0b0b0b;
   --panel:#111;
@@ -370,10 +394,65 @@ hr{
   background:#161616;
 }
 
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-top: 3px solid white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 </style>
 </head>
 
 <body>
+  <!-- INTRO OVERLAY -->
+<!-- INTRO OVERLAY -->
+<div id="intro">
+  <svg viewBox="0 0 600 200" id="introLogo">
+
+    <!-- MAIN LOGO -->
+    <text
+      x="50%"
+      y="70"
+      text-anchor="middle"
+      font-size="48"
+      letter-spacing="6"
+      fill="#eaeaea"
+      font-family="Inter, system-ui, Arial">
+      APEX GRID WORKS
+    </text>
+
+    <!-- RED BAR -->
+    <rect
+      id="introBar"
+      x="150"
+      y="95"
+      width="300"
+      height="6"
+      fill="#e10600"/>
+
+    <!-- TAGLINE / BYLINE -->
+    <text
+      x="50%"
+      y="130"
+      text-anchor="middle"
+      font-size="12"
+      letter-spacing="3"
+      fill="#9a9a9a"
+      font-family="Inter, system-ui, Arial">
+      BUILT FOR SPEED.
+    </text>
+
+  </svg>
+</div>
+
 <div class="container">
 
 <header class="brand">
@@ -508,7 +587,9 @@ hr{
 
 
 
-      <button onclick="sendOrder()">PLACE ORDER</button>
+      <button id="placeOrderBtn" onclick="sendOrder()">
+        PLACE ORDER
+      </button>
       <div id="orderSuccess" style="
         display:none;
         margin-top:12px;
@@ -544,8 +625,51 @@ hr{
     </div>
   </div>
 </div>
-
+<script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
 <script>
+window.addEventListener("load", () => {
+  const tl = gsap.timeline();
+
+  tl.from("#introLogo", {
+    y: 40,
+    scale: 0.6,
+    filter: "blur(6px)",
+    duration: 0.8,
+    ease: "power3.out"
+  })
+
+  .to("#introLogo", {
+    scale: 1.08,
+    duration: 0.25,
+    ease: "power2.out"
+  })
+
+  .to("#introLogo", {
+    scale: 1,
+    filter: "blur(0px)",
+    duration: 0.25,
+    ease: "power2.inOut"
+  })
+
+  // speed line punch
+  .fromTo("#introBar",
+    { width: 0, x: 300 },
+    { width: 160, x: 220, duration: 0.4, ease: "power3.out" },
+    "-=0.3"
+  )
+
+  // background leaves, logo stays
+  .to("#intro", {
+    opacity: 0,
+    duration: 0.6,
+    ease: "power2.inOut",
+    onComplete: () => {
+      document.getElementById("intro").remove();
+      document.body.classList.add("loaded");
+    }
+  });
+});
+
 let cart = {};
 let product = '', price = '', baseImage = '';
 
@@ -666,6 +790,10 @@ function closePopup(){
 }
 
 function sendOrder(){
+  const btn = document.getElementById("placeOrderBtn");
+  btn.disabled = true;
+  btn.innerHTML = `<div class="spinner"></div>`;
+
   const n = document.getElementById('custName').value.trim();
   const c = document.getElementById('custClass').value.trim();
   const ph = document.getElementById('custPhone').value.trim();
@@ -680,20 +808,38 @@ function sendOrder(){
   if(!n || !c || !ph || !em){
     error.innerText = "ALL FIELDS ARE REQUIRED";
     error.style.display = "block";
+    error.innerText = "ALL FIELDS ARE REQUIRED";
+    error.style.display = "block";
+    btn.innerText = "PLACE ORDER";
+    btn.disabled = false;
+    btn.style.opacity = "1";
     return;
+
   }
 
 
   if(!phoneRegex.test(ph)){
     error.innerText = "ENTER A VALID 10-DIGIT PHONE NUMBER";
     error.style.display = "block";
-    return;
+    error.innerText = "ALL FIELDS ARE REQUIRED";
+    error.style.display = "block";
+    btn.innerText = "PLACE ORDER";
+    btn.disabled = false;
+    btn.style.opacity = "1";
+  return;
+
   }
 
   if(!emailRegex.test(em)){
     error.innerText = "ENTER A VALID EMAIL ADDRESS";
     error.style.display = "block";
-    return;
+    error.innerText = "ALL FIELDS ARE REQUIRED";
+    error.style.display = "block";
+    btn.innerText = "PLACE ORDER";
+    btn.disabled = false;
+    btn.style.opacity = "1";
+  return;
+
   }
 
   error.style.display = "none";
@@ -741,7 +887,7 @@ function sendOrder(){
     priority
   };
 
-  fetch("https://apexgridworks-backend.onrender.com/api/order", {
+  fetch("http://localhost:3000/api/order", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -751,13 +897,17 @@ function sendOrder(){
   .then(res => res.json())
   .then(data => {
     if (data.success) {
-      document.getElementById("orderSuccess").style.display = "block";
+      btn.innerText = "✔ ORDER RECEIVED";
+      btn.style.background = "#2ecc71";
 
-      // 🔴 ADD THESE TWO LINES
       setTimeout(() => {
         resetOrderPopup();
         closePopup();
-      }, 1500);
+        btn.innerText = "PLACE ORDER";
+        btn.style.background = "";
+        btn.disabled = false;
+      }, 2000);
+
     } else {
       error.innerText = "ORDER FAILED. TRY AGAIN.";
       error.style.display = "block";
@@ -766,6 +916,16 @@ function sendOrder(){
   .catch(() => {
     error.innerText = "SERVER ERROR. TRY AGAIN LATER.";
     error.style.display = "block";
+    btn.innerText = "PLACE ORDER";
+    btn.disabled = false;
+    btn.style.opacity = "1";
+    btn.innerText = "PLACE ORDER";
+    btn.innerHTML = `
+      <div class="spinner"></div>
+      <div style="font-size:11px;margin-top:6px;letter-spacing:1px;">
+        PROCESSING…
+      </div>
+    `;
   });
 }
 
@@ -775,6 +935,11 @@ document.querySelectorAll('input[name="carColor"]').forEach(radio => {
       updateCompleteSetupImage();
       document.getElementById('pDesc').innerText =
         "Team: " + colorToTeam[radio.value];
+      error.innerText = "ALL FIELDS ARE REQUIRED";
+      error.style.display = "block";
+      btn.innerText = "PLACE ORDER";
+      btn.disabled = false;
+      btn.style.opacity = "1";
       return;
     }
 
@@ -795,6 +960,11 @@ document.querySelectorAll('input[name="baseColor"]').forEach(radio => {
     // COMPLETE SETUP → combined logic
     if (product === "Complete Setup") {
       updateCompleteSetupImage();
+      error.innerText = "ALL FIELDS ARE REQUIRED";
+      error.style.display = "block";
+      btn.innerText = "PLACE ORDER";
+      btn.disabled = false;
+      btn.style.opacity = "1";
       return;
     }
 
@@ -904,7 +1074,14 @@ function updateCompleteSetupImage() {
   const car = document.querySelector('input[name="carColor"]:checked')?.value;
   const base = document.querySelector('input[name="baseColor"]:checked')?.value;
 
-  if (!car || !base) return;
+  if (!car || !base){
+    error.innerText = "ALL FIELDS ARE REQUIRED";
+    error.style.display = "block";
+    btn.innerText = "PLACE ORDER";
+    btn.disabled = false;
+    btn.style.opacity = "1";
+    return;
+  };
 
   document.getElementById("pImg").src =
     bundleImages[car][base];
@@ -914,5 +1091,4 @@ function updateCompleteSetupImage() {
 
 
 </body>
-
 </html>
