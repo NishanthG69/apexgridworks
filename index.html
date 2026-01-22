@@ -408,6 +408,21 @@ hr{
   to { transform: rotate(360deg); }
 }
 
+/* MOBILE FIX */
+@media (max-width: 700px){
+  .popup{
+    flex-direction: column;
+    padding: 16px;
+  }
+
+  .popup img{
+    width: 100%;
+    height: auto;
+    max-height: 240px;
+    object-fit: contain;
+  }
+}
+
 </style>
 </head>
 
@@ -1101,3 +1116,4 @@ function updateCompleteSetupImage() {
 
 </body>
 </html>
+
