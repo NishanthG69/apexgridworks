@@ -439,12 +439,31 @@ hr{
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(0,0,0,.6);
-  border: none;
+  
+  width: 42px;
+  height: 42px;
+
+  background: rgba(0,0,0,0.6);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+
   color: white;
-  font-size: 22px;
-  padding: 6px 10px;
+  font-size: 20px;
+  font-weight: 700;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   cursor: pointer;
+  padding: 0;
+
+  transition: background .15s, transform .15s;
+}
+
+.carousel .nav:hover{
+  background: rgba(225,6,0,0.85);
+  transform: translateY(-50%) scale(1.05);
 }
 
 .carousel .left{ left: 6px; }
@@ -813,7 +832,7 @@ function openPopup(t, p, img, d){
     images = productImages[product]["GREY"];
   }
   
-  document.getElementById("pImg").src = images[0];
+  showImage();
 
   if (colorProducts.includes(t)) {
     colorPicker.style.display = "flex";
@@ -987,15 +1006,16 @@ function sendOrder(){
   });
 }
 
-document.querySelectorAll('input[name="carColor"]').forEach(radio => {
-  radio.addEventListener('change', () => {
+document.querySelectorAll('input[name="baseColor"]').forEach(radio => {
+  radio.addEventListener("change", () => {
     const error = document.getElementById("formError");
     const btn = document.getElementById("placeOrderBtn");
 
+    const selected = radio.value;
+
+    // COMPLETE SETUP
     if (product === "Complete Setup") {
       updateCompleteSetupImages();
-      document.getElementById('pDesc').innerText =
-        "Team: " + colorToTeam[radio.value];
       error.innerText = "ALL FIELDS ARE REQUIRED";
       error.style.display = "block";
       btn.innerText = "PLACE ORDER";
@@ -1004,12 +1024,11 @@ document.querySelectorAll('input[name="carColor"]').forEach(radio => {
       return;
     }
 
-    if (colorProducts.includes(product)) {
-      document.getElementById('pImg').src =
-        colorImages[product][radio.value][0];
-
-      document.getElementById('pDesc').innerText =
-        "Team: " + colorToTeam[radio.value];
+    // BASE-ONLY PRODUCTS (Display Stand, Logo Module, Extra Bumpers)
+    if (baseColorProducts.includes(product)) {
+      images = baseColorImages[product][selected]; // 🔑 UPDATE CAROUSEL STATE
+      imgIndex = 0;
+      showImage();
     }
   });
 });
@@ -1148,6 +1167,7 @@ function prevImg() {
 
 </body>
 </html>
+
 
 
 
