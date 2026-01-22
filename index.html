@@ -408,76 +408,75 @@ hr{
   to { transform: rotate(360deg); }
 }
 
-/* MOBILE FIX */
-@media (max-width: 700px){
-  .popup{
-    flex-direction: column;
-    padding: 16px;
-  }
-
-  .popup img{
-    width: 100%;
-    height: 260px;          /* FORCE HEIGHT */
-    object-fit: contain;
-    display: block;
-  }
-  
-  .carousel{
-  position: relative;
+.carousel{
   width: 400px;
-  height: 400px;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.carousel-controls{
+  display: flex;
+  gap: 12px;
+}
+
+.carousel .nav{
+  flex: 1;
+  height: 42px;
+
+  background: var(--accent);
+  border: none;
+
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+
+  cursor: pointer;
+  transition: background .15s ease;
+}
+
+.carousel .nav:hover{
+  background: #ff1a1a;
+}
+/* MOBILE FIX */
+.carousel{
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 
 .carousel img{
   width: 100%;
-  height: 100%;
+  height: 400px;
   object-fit: contain;
   border: 1px solid var(--border);
 }
 
+.carousel-controls{
+  display: flex;
+  gap: 12px;
+}
+
 .carousel .nav{
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
+  flex: 1;
+  height: 42px;
 
-  width: 44px;
-  height: 44px;
-
-  background: rgba(0,0,0,0.65);
-  border: 1.5px solid #333;
-  border-radius: 50%;
+  background: var(--accent);
+  border: none;
 
   color: white;
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 700;
-  line-height: 1;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
 
   cursor: pointer;
-  padding: 0;
-
-  transition: background 0.15s ease, transform 0.15s ease;
-  z-index: 5;
+  transition: background .15s ease;
 }
 
 .carousel .nav:hover{
-  background: rgba(225,6,0,0.85);
-  transform: translateY(-50%) scale(1.08);
+  background: #ff1a1a;
 }
 
-.carousel .left{ left: 10px; }
-.carousel .right{ right: 10px; }
-
-/* mobile */
-@media (max-width: 700px){
-  .carousel{
-    width: 100%;
-    height: 260px;
-  }
-}
 </style>
 </head>
 
@@ -597,10 +596,13 @@ hr{
 <div class="popup-bg" id="popupBg">
   <div class="popup">
     <div class="carousel">
-      <button class="nav left" onclick="prevImg()">‹</button>
       <img id="pImg">
-      <button class="nav right" onclick="nextImg()">›</button>
-    </div>  
+    
+      <div class="carousel-controls">
+        <button class="nav" onclick="prevImg()">‹</button>
+        <button class="nav" onclick="nextImg()">›</button>
+      </div>
+    </div>
     <div style="flex:1">
       <h3 id="pTitle"></h3>
       <p id="pDesc"></p>
@@ -1270,6 +1272,7 @@ function prevImg() {
 
 </body>
 </html>
+
 
 
 
