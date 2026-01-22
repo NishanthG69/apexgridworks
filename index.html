@@ -420,11 +420,13 @@ hr{
     height: 260px;          /* FORCE HEIGHT */
     object-fit: contain;
     display: block;
+  }
+  
   .carousel{
   position: relative;
   width: 400px;
   height: 400px;
-}
+  }
 
 .carousel img{
   width: 100%;
@@ -766,7 +768,18 @@ const productImages = {
     }
   }
 };
-  
+
+const colorToTeam = {
+  Red: "RED TEAM",
+  Blue: "BLUE TEAM", 
+  Black: "BLACK TEAM",
+  Grey: "GREY TEAM"
+};
+
+const colorImages = productImages;
+const baseColorProducts = ["Display Stand", "Logo Module", "Extra Bumpers"];
+const baseColorImages = productImages;
+
 let cart = {};
 let product = '', price = '', baseImage = '';
 
@@ -807,7 +820,7 @@ function openPopup(t, p, img, d){
 
     // reset to Red when opening
     document.querySelector('input[name="carColor"][value="Red"]').checked = true;
-    document.getElementById('pImg').src = colorImages[t]["Red"];
+    document.getElementById('pImg').src = colorImages[t]["Red"][0];
   } else {
     colorPicker.style.display = "none";
   }
@@ -824,7 +837,7 @@ function openPopup(t, p, img, d){
   document.getElementById('popupBg').style.display = 'flex';
 
   if (t === "Complete Setup") {
-    updateCompleteSetupImage();
+    updateCompleteSetupImages()
   }
 }
 
@@ -976,8 +989,11 @@ function sendOrder(){
 
 document.querySelectorAll('input[name="carColor"]').forEach(radio => {
   radio.addEventListener('change', () => {
+    const error = document.getElementById("formError");
+    const btn = document.getElementById("placeOrderBtn");
+
     if (product === "Complete Setup") {
-      updateCompleteSetupImage();
+      updateCompleteSetupImages();
       document.getElementById('pDesc').innerText =
         "Team: " + colorToTeam[radio.value];
       error.innerText = "ALL FIELDS ARE REQUIRED";
@@ -988,10 +1004,9 @@ document.querySelectorAll('input[name="carColor"]').forEach(radio => {
       return;
     }
 
-    // existing Racing Car logic
     if (colorProducts.includes(product)) {
       document.getElementById('pImg').src =
-        colorImages[product][radio.value];
+        colorImages[product][radio.value][0];
 
       document.getElementById('pDesc').innerText =
         "Team: " + colorToTeam[radio.value];
@@ -999,28 +1014,6 @@ document.querySelectorAll('input[name="carColor"]').forEach(radio => {
   });
 });
 
-document.querySelectorAll('input[name="baseColor"]').forEach(radio => {
-  radio.addEventListener("change", () => {
-
-    // COMPLETE SETUP → combined logic
-    if (product === "Complete Setup") {
-      updateCompleteSetupImage();
-      error.innerText = "ALL FIELDS ARE REQUIRED";
-      error.style.display = "block";
-      btn.innerText = "PLACE ORDER";
-      btn.disabled = false;
-      btn.style.opacity = "1";
-      return;
-    }
-
-    // BASE-ONLY PRODUCTS
-    if (baseColorProducts.includes(product)) {
-      const selected = radio.value;
-      document.getElementById("pImg").src =
-        baseColorImages[product][selected];
-    }
-  });
-});
 
 ["custName","custClass","custPhone","custEmail"].forEach(id=>{
   document.getElementById(id).addEventListener("input",()=>{
@@ -1132,27 +1125,12 @@ function updateCompleteSetupImages(){
   imgIndex = 0;
   document.getElementById("pImg").src = images[0];
 }
-
-
-  document.getElementById("pImg").src =
-    bundleImages[car][base];
-}
-
-function nextImg(){
-  imgIndex = (imgIndex + 1) % images.length;
-  document.getElementById("pImg").src = images[imgIndex];
-}
-
-function prevImg(){
-  imgIndex = (imgIndex - 1 + images.length) % images.length;
-  document.getElementById("pImg").src = images[imgIndex];
-}
-  
 </script>
 
 
 </body>
 </html>
+
 
 
 
