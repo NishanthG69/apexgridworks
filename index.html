@@ -420,9 +420,41 @@ hr{
     height: 260px;          /* FORCE HEIGHT */
     object-fit: contain;
     display: block;
-  }
+  .carousel{
+  position: relative;
+  width: 400px;
+  height: 400px;
 }
 
+.carousel img{
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border: 1px solid var(--border);
+}
+
+.carousel .nav{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,.6);
+  border: none;
+  color: white;
+  font-size: 22px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.carousel .left{ left: 6px; }
+.carousel .right{ right: 6px; }
+
+/* mobile */
+@media (max-width: 700px){
+  .carousel{
+    width: 100%;
+    height: 260px;
+  }
+}
 </style>
 </head>
 
@@ -541,7 +573,11 @@ hr{
 
 <div class="popup-bg" id="popupBg">
   <div class="popup">
-    <img id="pImg">
+    <div class="carousel">
+      <button class="nav left" onclick="prevImg()">‹</button>
+      <img id="pImg">
+      <button class="nav right" onclick="nextImg()">›</button>
+    </div>  
     <div style="flex:1">
       <h3 id="pTitle"></h3>
       <p id="pDesc"></p>
@@ -685,76 +721,56 @@ window.addEventListener("load", () => {
   });
 });
 
+let images = [];
+let imgIndex = 0;
+
+const productImages = {
+  "Racing Car": {
+    Red: ["photos/car_red.jpg","photos/car_red.jpg","photos/car_red.jpg"],
+    Blue: ["photos/car_blue.jpg","photos/car_blue.jpg","photos/car_blue.jpg"],
+    Black: ["photos/car_black.jpg","photos/car_black.jpg","photos/car_black.jpg"],
+    Grey: ["photos/car_grey.jpg","photos/car_grey.jpg","photos/car_grey.jpg"]
+  },
+
+  "Display Stand": {
+    GREY: ["photos/stand_grey.jpg","photos/stand_grey.jpg","photos/stand_grey.jpg"],
+    BLACK: ["photos/stand_black.jpg","photos/stand_black.jpg","photos/stand_black.jpg"]
+  },
+
+  "Logo Module": {
+    GREY: ["photos/logo_grey.jpg","photos/logo_grey.jpg","photos/logo_grey.jpg"],
+    BLACK: ["photos/logo_black.jpg","photos/logo_black.jpg","photos/logo_black.jpg"]
+  },
+
+  "Extra Bumpers": {
+    GREY: ["photos/bumpers_grey.jpg","photos/bumpers_grey.jpg","photos/bumpers_grey.jpg"],
+    BLACK: ["photos/bumpers_black.jpg","photos/bumpers_black.jpg","photos/bumpers_black.jpg"]
+  },
+
+  "Complete Setup": {
+    Red: {
+      GREY: ["photos/bundle_red_grey.jpg","photos/bundle_red_grey.jpg","photos/bundle_red_grey.jpg"],
+      BLACK:["photos/bundle_red_black.jpg","photos/bundle_red_black.jpg","photos/bundle_red_black.jpg"]
+    },
+    Blue: {
+      GREY: ["photos/bundle_blue_grey.jpg","photos/bundle_blue_grey.jpg","photos/bundle_blue_grey.jpg"],
+      BLACK:["photos/bundle_blue_black.jpg","photos/bundle_blue_black.jpg","photos/bundle_blue_black.jpg"]
+    },
+    Black: {
+      GREY: ["photos/bundle_black_grey.jpg","photos/bundle_black_grey.jpg","photos/bundle_black_grey.jpg"],
+      BLACK:["photos/bundle_black_black.jpg","photos/bundle_black_black.jpg","photos/bundle_black_black.jpg"]
+    },
+    Grey: {
+      GREY: ["photos/bundle_grey_grey.jpg","photos/bundle_grey_grey.jpg","photos/bundle_grey_grey.jpg"],
+      BLACK:["photos/bundle_grey_black.jpg","photos/bundle_grey_black.jpg","photos/bundle_grey_black.jpg"]
+    }
+  }
+};
+  
 let cart = {};
 let product = '', price = '', baseImage = '';
 
 const colorProducts = ["Racing Car", "Complete Setup"];
-
-const baseColorProducts = [
-  "Display Stand",
-  "Logo Module",
-  "Extra Bumpers",
-  "Complete Setup"
-];
-
-// image map per product + color
-const colorImages = {
-  "Racing Car": {
-    Red: "photos/car_red.jpg",
-    Blue: "photos/car_blue.jpg",
-    Black: "photos/car_black.jpg",
-    Grey: "photos/car_grey.jpg"
-  },
-  "Complete Setup": {
-    Red: "photos/bundle_red.jpg",
-    Blue: "photos/bundle_blue.jpg",
-    Black: "photos/bundle_black.jpg",
-    Grey: "photos/bundle_grey.jpg"
-  }
-};
-
-const colorToTeam = {
-  Red: "Ferrari",
-  Blue: "Red Bull",
-  Black: "Cadillac",
-  Grey: "Mercedes"
-};
-
-const baseColorImages = {
-  "Display Stand": {
-    GREY: "photos/stand_grey.jpg",
-    BLACK: "photos/stand_black.jpg"
-  },
-  "Logo Module": {
-    GREY: "photos/logo_grey.jpg",
-    BLACK: "photos/logo_black.jpg"
-  },
-  "Extra Bumpers": {
-    GREY: "photos/bumpers_grey.jpg",
-    BLACK: "photos/bumpers_black.jpg"
-  }
-};
-
-const bundleImages = {
-  Red: {
-    GREY: "photos/bundle_red_grey.jpg",
-    BLACK: "photos/bundle_red_black.jpg"
-  },
-  Blue: {
-    GREY: "photos/bundle_blue_grey.jpg",
-    BLACK: "photos/bundle_blue_black.jpg"
-  },
-  Black: {
-    GREY: "photos/bundle_black_grey.jpg",
-    BLACK: "photos/bundle_black_black.jpg"
-  },
-  Grey: {
-    GREY: "photos/bundle_grey_grey.jpg",
-    BLACK: "photos/bundle_grey_black.jpg"
-  }
-};
-
-
 
 function openPopup(t, p, img, d){
   resetOrderPopup(); 
@@ -773,6 +789,18 @@ function openPopup(t, p, img, d){
   document.getElementById('pImg').src = img;
 
   const colorPicker = document.getElementById("colorPicker");
+
+  imgIndex = 0;
+  
+  if (product === "Complete Setup") {
+    updateCompleteSetupImages();
+  } else if (colorProducts.includes(product)) {
+    images = productImages[product]["Red"];
+  } else if (baseColorProducts.includes(product)) {
+    images = productImages[product]["GREY"];
+  }
+  
+  document.getElementById("pImg").src = images[0];
 
   if (colorProducts.includes(t)) {
     colorPicker.style.display = "flex";
@@ -1094,27 +1122,37 @@ function resetOrderPopup(){
   if (grey) grey.checked = true;
 }
 
-function updateCompleteSetupImage() {
+function updateCompleteSetupImages(){
   const car = document.querySelector('input[name="carColor"]:checked')?.value;
   const base = document.querySelector('input[name="baseColor"]:checked')?.value;
 
-  if (!car || !base){
-    error.innerText = "ALL FIELDS ARE REQUIRED";
-    error.style.display = "block";
-    btn.innerText = "PLACE ORDER";
-    btn.disabled = false;
-    btn.style.opacity = "1";
-    return;
-  };
+  if (!car || !base) return;
+
+  images = productImages["Complete Setup"][car][base];
+  imgIndex = 0;
+  document.getElementById("pImg").src = images[0];
+}
+
 
   document.getElementById("pImg").src =
     bundleImages[car][base];
 }
 
+function nextImg(){
+  imgIndex = (imgIndex + 1) % images.length;
+  document.getElementById("pImg").src = images[imgIndex];
+}
+
+function prevImg(){
+  imgIndex = (imgIndex - 1 + images.length) % images.length;
+  document.getElementById("pImg").src = images[imgIndex];
+}
+  
 </script>
 
 
 </body>
 </html>
+
 
 
