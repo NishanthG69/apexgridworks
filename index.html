@@ -838,7 +838,11 @@ function openPopup(t, p, img, d){
   }
   
   showImage();
-
+  if (colorProducts.includes(product)) {
+    const color = document.querySelector('input[name="carColor"]:checked')?.value || "Red";
+    document.getElementById('pDesc').innerText =
+      "Team: " + colorToTeam[color];
+  }
   if (colorProducts.includes(t)) {
     colorPicker.style.display = "flex";
 
@@ -1192,6 +1196,7 @@ function prevImg() {
 
 </body>
 </html>
+
 
 
 
