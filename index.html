@@ -497,7 +497,17 @@ hr{
     width: 100%;
   }
 }
+@media (max-width: 700px){
+  .popup-bg{
+    align-items: flex-start;
+  }
 
+  .popup{
+    max-height: 100vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
 </style>
 </head>
 
@@ -1293,6 +1303,7 @@ function prevImg() {
 
 </body>
 </html>
+
 
 
 
