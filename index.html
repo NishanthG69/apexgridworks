@@ -796,7 +796,12 @@ const colorToTeam = {
 };
 
 const colorImages = productImages;
-const baseColorProducts = ["Display Stand", "Logo Module", "Extra Bumpers"];
+const baseColorProducts = [
+  "Display Stand",
+  "Logo Module",
+  "Extra Bumpers",
+  "Complete Setup"
+];
 const baseColorImages = productImages;
 
 let cart = {};
@@ -1032,6 +1037,27 @@ document.querySelectorAll('input[name="baseColor"]').forEach(radio => {
   });
 });
 
+document.querySelectorAll('input[name="carColor"]').forEach(radio => {
+  radio.addEventListener("change", () => {
+    const color = radio.value;
+
+    if (product === "Complete Setup") {
+      updateCompleteSetupImages();
+      document.getElementById('pDesc').innerText =
+        "Team: " + colorToTeam[color];
+      return;
+    }
+
+    if (colorProducts.includes(product)) {
+      images = productImages[product][color];
+      imgIndex = 0;
+      showImage();
+
+      document.getElementById('pDesc').innerText =
+        "Team: " + colorToTeam[color];
+    }
+  });
+});
 
 ["custName","custClass","custPhone","custEmail"].forEach(id=>{
   document.getElementById(id).addEventListener("input",()=>{
@@ -1166,6 +1192,7 @@ function prevImg() {
 
 </body>
 </html>
+
 
 
 
