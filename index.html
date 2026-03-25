@@ -761,6 +761,21 @@ hr{
 #placeOrderBtn:hover{ background:var(--accent2); }
 #placeOrderBtn:disabled{ opacity:0.7; cursor:default; }
 
+/* Button captions */
+.btn-caption{
+  margin-top:6px;
+  text-align:center;
+  font-family:'DM Mono',monospace;
+  font-size:9px;
+  letter-spacing:1px;
+  color:var(--muted);
+  line-height:1.6;
+}
+
+.btn-caption.success-caption{
+  color:#3aaa3a;
+}
+
 /* Close text */
 .close{
   margin-top:10px;
@@ -1119,15 +1134,12 @@ hr{
       <div id="formError"></div>
 
       <button id="placeOrderBtn" onclick="sendOrder()">PLACE ORDER</button>
-      <div style="margin-top:6px; font-size:10px; color:#6b6460; text-align:center; font-family:'DM Mono',monospace; letter-spacing:1px;">
-        You will receive a confirmation email from AGW.
-      </div>
+      <div class="btn-caption" id="placeOrderCaption">You'll receive a confirmation email at the address above.</div>
+      <div class="btn-caption success-caption" id="spamCaption" style="display:none;">Didn't get an email? Check your spam folder — it may have landed there.</div>
 
       <div id="orderSuccess">
         ORDER PLACED.<br>
-        We've received your order.<br><br>
-        If you don’t receive a confirmation email within 1–2 minutes,<br>
-        please check your spam folder.
+        We've received your order. A confirmation email will be sent.
       </div>
 
       <div class="close" onclick="closePopup()">CANCEL</div>
@@ -1371,6 +1383,9 @@ function sendOrder(){
     if(data.success){
       btn.innerText="✔ ORDER RECEIVED";
       btn.style.background="#2ecc71";
+      // swap captions: hide "place order" caption, show spam warning
+      document.getElementById("placeOrderCaption").style.display = "none";
+      document.getElementById("spamCaption").style.display = "block";
       setTimeout(()=>{ resetOrderPopup(); closePopup(); },2000);
     } else {
       error.innerText="ORDER FAILED. TRY AGAIN.";
@@ -1423,6 +1438,9 @@ function resetOrderPopup(){
   if(red) red.checked=true;
   document.getElementById("formError").style.display="none";
   document.getElementById("orderSuccess").style.display="none";
+  // reset captions
+  document.getElementById("placeOrderCaption").style.display = "block";
+  document.getElementById("spamCaption").style.display = "none";
   const grey=document.querySelector('input[name="baseColor"][value="GREY"]');
   if(grey) grey.checked=true;
 }
